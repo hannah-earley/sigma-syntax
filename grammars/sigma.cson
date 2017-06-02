@@ -363,7 +363,7 @@ repository:
                    [^\\s.#@<>()\\[\\]{}`:\"]*)'''
         captures:
           '1':
-            name: 'variable.parameter.sigma'
+            name: 'entity.name.function.sigma'
       }
     ]
   identas:
@@ -380,7 +380,7 @@ repository:
                    [^\\s.#@<>()\\[\\]{}`:\"]*)'''
         captures:
           '1':
-            name: 'variable.parameter.sigma'
+            name: 'entity.name.function.sigma'
           '2':
             name: 'keyword.operator.function.alias.sigma'
           '3':
@@ -403,8 +403,8 @@ repository:
       {
         comment: 'label, ref should be entity.name.function.sigma'
         match: '''(?x) #\\b
-                  (`[^\\s.#@<>()\\[\\]{}`:\"0-9]
-                    [^\\s.#@<>()\\[\\]{}`:\"]*)'''
+                  ([^\\s.#@<>()\\[\\]{}`:\"0-9]
+                   [^\\s.#@<>()\\[\\]{}`:\"]*)'''
         captures:
           '1':
             name: 'entity.name.tag.sigma'
