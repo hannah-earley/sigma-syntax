@@ -1,0 +1,12 @@
+'.source.sigma':
+  editor:
+    commentStart: ';'
+    increaseIndentPattern: '^.*\\(.*[^)"]$'
+  'bracket-matcher':
+    autocompleteCharacters: [
+      '()'
+      '[]'
+      '{}'
+      '<>'
+      '\"\"'
+    ]
