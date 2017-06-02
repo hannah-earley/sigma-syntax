@@ -257,7 +257,7 @@ repository:
                     name: 'entity.name.function.scheme'
               }
               {
-                include: '#sigma'
+                include: '#sigmaPerm'
               }
             ]
           }
@@ -274,7 +274,7 @@ repository:
                 include: '#illegalReserved'
               }
               {
-                include: '#sigma'
+                include: '#sigmaPerm'
               }
             ]
           }
@@ -305,7 +305,7 @@ repository:
                     name: 'entity.name.function.scheme'
               }
               {
-                include: '#sigma'
+                include: '#sigmaPerm'
               }
             ]
           }
@@ -329,7 +329,7 @@ repository:
                 include: '#illegalReserved'
               }
               {
-                include: '#sigma'
+                include: '#sigmaPerm'
               }
             ]
           }
@@ -407,7 +407,7 @@ repository:
                    [^\\s.#@<>()\\[\\]{}`:\"]*)'''
         captures:
           '1':
-            name: 'entity.name.type.sigma'
+            name: 'entity.name.function.sigma'
       }
       {
         begin: '\\('
@@ -446,6 +446,96 @@ repository:
         ]
       }
       {
+        begin: '<'
+        end: '>'
+        patterns: [
+          {
+            include: '#sigmaPerm'
+          }
+          {
+            match: ':'
+          }
+        ]
+      }
+      {
+        match: '\\b#\\b'
+        name: 'entity.name.tag.sigma'
+      }
+      {
+        include: '#num'
+      }
+    ]
+  sigmaPerm:
+    patterns: [
+      {
+        include: '#illegalReserved'
+      }
+      {
+        match: '''(?x) #\\b
+                  (`[^\\s.#@<>()\\[\\]{}`:\"0-9]
+                    [^\\s.#@<>()\\[\\]{}`:\"]*)'''
+        captures:
+          '1':
+            name: 'entity.name.function.sigma'
+      }
+      {
+        comment: 'label, ref should be entity.name.function.sigma'
+        match: '''(?x) #\\b
+                  ([^\\s.#@<>()\\[\\]{}`:\"0-9]
+                   [^\\s.#@<>()\\[\\]{}`:\"]*)'''
+        captures:
+          '1':
+            name: 'entity.name.type.sigma'
+      }
+      {
+        begin: '\\('
+        end: '\\)'
+        patterns: [
+          {
+            include: '#sigmaPerm'
+          }
+        ]
+      }
+      {
+        begin: '\\['
+        end: '\\]'
+        patterns: [
+          {
+            include: '#sigmaPerm'
+          }
+          {
+            begin: '\\.'
+            end: '(?=\\])'
+            patterns: [
+              {
+                include: '#sigmaPermOne'
+              }
+            ]
+          }
+        ]
+      }
+      {
+        begin: '\\{'
+        end: '\\}'
+        patterns: [
+          {
+            include: '#sigmaPerm'
+          }
+        ]
+      }
+      {
+        begin: '<'
+        end: '>'
+        patterns: [
+          {
+            include: '#sigmaPerm'
+          }
+          {
+            match: ':'
+          }
+        ]
+      }
+      {
         match: '\\b#\\b'
         name: 'entity.name.tag.sigma'
       }
@@ -457,6 +547,12 @@ repository:
     patterns: [
       {
         include: '#sigma'
+      }
+    ]
+  sigmaPermOne:
+    patterns: [
+      {
+        include: '#sigmaPerm'
       }
     ]
   stringChar:
