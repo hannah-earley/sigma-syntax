@@ -458,7 +458,7 @@ repository:
         ]
       }
       {
-        match: '\\b#\\b'
+        match: '#'
         name: 'entity.name.tag.sigma'
       }
       {
@@ -536,7 +536,7 @@ repository:
         ]
       }
       {
-        match: '\\b#\\b'
+        match: '#'
         name: 'entity.name.tag.sigma'
       }
       {
