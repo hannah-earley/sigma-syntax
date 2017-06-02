@@ -407,7 +407,7 @@ repository:
                    [^\\s.#@<>()\\[\\]{}`:\"]*)'''
         captures:
           '1':
-            name: 'entity.name.tag.sigma'
+            name: 'entity.name.type.sigma'
       }
       {
         begin: '\\('
