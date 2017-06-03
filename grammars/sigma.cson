@@ -92,128 +92,59 @@ repository:
         ]
       }
       {
-        begin: '(?<=\\()'
-        end: '(?=\\))'
-        patterns: [
-          {
-            begin: '(inh)'
-            beginCaptures:
-              '1':
-                name: 'keyword.control.import.sigma'
-            end: '(")'
-            endCaptures:
-              '1':
-                name: 'punctuation.definition.string.begin.sigma'
-            patterns: [
-              include: '#comments'
-            ]
-          }
-          {}
-        ]
-      }
-      # {
-      #   begin: '(?<=\\()\\s*(inh)\\s*'
-      #   beginCaptures:
-      #     '1':
-      #       name: 'keyword.control.import.sigma'
-      #   end: '(?=\\))'
-      #   name: 'meta.declaration.import.sigma'
-      #   patterns: [
-      #     {
-      #       begin: '(\")'
-      #       beginCaptures:
-      #         '1':
-      #           name: 'punctuation.definition.string.begin.sigma'
-      #       end: '(?=\\))'
-      #       patterns: [
-      #         {
-      #           begin: '(\")'
-      #           beginCaptures:
-      #             '1':
-      #               name: 'punctuation.definition.string.end.sigma'
-      #           end: '(?=\\))'
-      #           patterns: [
-      #             {
-      #               include: '#identas'
-      #             }
-      #             {
-      #               include: '#ident'
-      #             }
-      #             {
-      #               include: '#illegalRest'
-      #             }
-      #             {
-      #               match: '\\s+'
-      #             }
-      #           ]
-      #         }
-      #         {
-      #           include: '#stringChar'
-      #         }
-      #       ]
-      #     }
-      #     # {
-      #     #   begin: '\\G(\")'
-      #     #   beginCaptures:
-      #     #     '1':
-      #     #       name: 'punctuation.definition.string.begin.sigma'
-      #     #   end: '(\")'
-      #     #   endCaptures:
-      #     #     '1':
-      #     #       name: 'punctuation.definition.string.end.sigma'
-      #     #   name: 'string.quoted.double.sigma'
-      #     #   patterns: [
-      #     #     {
-      #     #       include: '#stringChar'
-      #     #     }
-      #     #   ]
-      #     # }
-      #     # {
-      #     #   include: '#identas'
-      #     # }
-      #     # {
-      #     #   include: '#ident'
-      #     # }
-      #     # {
-      #     #   include: '#illegalRest'
-      #     # }
-      #   ]
-      # }
-      {
-        begin: '(?<=\\()\\s*(inh\\*)\\s*(?=")'
+        begin: '\\s*(inh\\*?)(?=[\\s.#@<>()\\[\\]{}`:\"])'
         beginCaptures:
           '1':
             name: 'keyword.control.import.sigma'
         end: '(?=\\))'
-        name: 'meta.declaration.import.sigma'
         patterns: [
           {
-            begin: '\\G(\")'
+            include: '#comments'
+          }
+          {
+            match: '[^\"\\s)]+'
+            name: 'invalid.illegal.declaration.sigma'
+          }
+          {
+            begin: '\"'
             beginCaptures:
-              '1':
+              '0':
                 name: 'punctuation.definition.string.begin.sigma'
-            end: '(\")'
-            endCaptures:
-              '1':
-                name: 'punctuation.definition.string.end.sigma'
-            name: 'string.quoted.double.sigma'
+            end: '(?=\\))'
             patterns: [
+              {
+                begin: '(\"|$\\n?)'
+                beginCaptures:
+                  '0':
+                    name: 'punctuation.definition.string.end.sigma'
+                end: '(?=\\))'
+                patterns: [
+                  {
+                    include: '#comments'
+                  }
+                  {
+                    include: '#identas'
+                  }
+                  {
+                    include: '#ident'
+                  }
+                  {
+                    include: '#illegalRest'
+                  }
+                ]
+              }
               {
                 include: '#stringChar'
               }
+              {
+                match: '[^\"\\\\\\n]+'
+                name: 'string.quoted.double.filepath.sigma'
+              }
             ]
-          }
-          {
-            match: '(?x)(?<=\")\\s*
-                    ([^\\s.#@<>()\\[\\]{}`:\"0-9]
-                     [^\\s.#@<>()\\[\\]{}`:\"]*)'
-            name: 'entity.name.function.sigma'
-          }
-          {
-            include: '#illegalRest'
           }
         ]
       }
+
       {
         begin: '(?<=\\()\\s*(beq)(?!\\*)\\s*'
         beginCaptures:
