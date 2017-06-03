@@ -4,7 +4,7 @@ comment: '''based off of the language-racket atom grammar'''
 fileTypes: [
   'sig'
 ]
-# firstLineMatch: '^#!\\s*/.*\\bsigma(-repl)?'
+firstLineMatch: '^#!\\s*/.*\\bsigma(-repl)?'
 patterns: [
   {
     include: '#comments'
@@ -70,41 +70,115 @@ repository:
       {
         include: '#comments'
       }
-      {
-        begin: '(?<=\\()\\s*(inh)\\s*(?=")'
+      { # perm definitions
+        begin: '\\s*(perm\\*?)(?=[\\s.#@<>()\\[\\]{}`:\"])'
         beginCaptures:
           '1':
-            name: 'keyword.control.import.sigma'
+            name: 'keyword.control.definition.sigma'
         end: '(?=\\))'
-        name: 'meta.declaration.import.sigma'
         patterns: [
           {
-            begin: '\\G(\")'
-            beginCaptures:
-              '1':
-                name: 'punctuation.definition.string.begin.sigma'
-            end: '(\")'
-            endCaptures:
-              '1':
-                name: 'punctuation.definition.string.end.sigma'
-            name: 'string.quoted.double.sigma'
-            patterns: [
-              {
-                include: '#stringChar'
-              }
-            ]
+            include: '#sexpPermRHS'
           }
           {
-            include: '#identas'
+            include: '#comments'
           }
           {
-            include: '#ident'
+            include: '#sexpPermLHS'
           }
           {
             include: '#illegalRest'
           }
         ]
       }
+      {
+        begin: '(?<=\\()'
+        end: '(?=\\))'
+        patterns: [
+          {
+            begin: '(inh)'
+            beginCaptures:
+              '1':
+                name: 'keyword.control.import.sigma'
+            end: '(")'
+            endCaptures:
+              '1':
+                name: 'punctuation.definition.string.begin.sigma'
+            patterns: [
+              include: '#comments'
+            ]
+          }
+          {}
+        ]
+      }
+      # {
+      #   begin: '(?<=\\()\\s*(inh)\\s*'
+      #   beginCaptures:
+      #     '1':
+      #       name: 'keyword.control.import.sigma'
+      #   end: '(?=\\))'
+      #   name: 'meta.declaration.import.sigma'
+      #   patterns: [
+      #     {
+      #       begin: '(\")'
+      #       beginCaptures:
+      #         '1':
+      #           name: 'punctuation.definition.string.begin.sigma'
+      #       end: '(?=\\))'
+      #       patterns: [
+      #         {
+      #           begin: '(\")'
+      #           beginCaptures:
+      #             '1':
+      #               name: 'punctuation.definition.string.end.sigma'
+      #           end: '(?=\\))'
+      #           patterns: [
+      #             {
+      #               include: '#identas'
+      #             }
+      #             {
+      #               include: '#ident'
+      #             }
+      #             {
+      #               include: '#illegalRest'
+      #             }
+      #             {
+      #               match: '\\s+'
+      #             }
+      #           ]
+      #         }
+      #         {
+      #           include: '#stringChar'
+      #         }
+      #       ]
+      #     }
+      #     # {
+      #     #   begin: '\\G(\")'
+      #     #   beginCaptures:
+      #     #     '1':
+      #     #       name: 'punctuation.definition.string.begin.sigma'
+      #     #   end: '(\")'
+      #     #   endCaptures:
+      #     #     '1':
+      #     #       name: 'punctuation.definition.string.end.sigma'
+      #     #   name: 'string.quoted.double.sigma'
+      #     #   patterns: [
+      #     #     {
+      #     #       include: '#stringChar'
+      #     #     }
+      #     #   ]
+      #     # }
+      #     # {
+      #     #   include: '#identas'
+      #     # }
+      #     # {
+      #     #   include: '#ident'
+      #     # }
+      #     # {
+      #     #   include: '#illegalRest'
+      #     # }
+      #   ]
+      # }
       {
         begin: '(?<=\\()\\s*(inh\\*)\\s*(?=")'
         beginCaptures:
@@ -233,109 +307,6 @@ repository:
         ]
       }
       {
-        begin: '(?<=\\()\\s*(perm)\\s*\\('
-        beginCaptures:
-          '1':
-            name: 'keyword.control.definition.sigma'
-        end: '\\)\s*(?=\\))'
-        name: 'meta.declaration.definition.sigma'
-        patterns: [
-          {
-            begin: '(?<=\\))\\s*\\('
-            end: '(?=\\))'
-            patterns: [
-              {
-                include: '#illegalReserved'
-              }
-              {
-                match: '''(?x) #\\b
-                          ([^\\s.#@<>()\\[\\]{}`:\"0-9]
-                           [^\\s.#@<>()\\[\\]{}`:\"]*)\\s*
-                          (?=\\))'''
-                captures:
-                  '1':
-                    name: 'entity.name.function.scheme'
-              }
-              {
-                include: '#sigmaPerm'
-              }
-            ]
-          }
-          {
-            begin: '''(?x)\\G(?<=\\()\\s*
-                      ([^\\s.#@<>()\\[\\]{}`:\"0-9]
-                       [^\\s.#@<>()\\[\\]{}`:\"]*)'''
-            beginCaptures:
-              '1':
-                name: 'entity.name.function.scheme'
-            end: '\\)'
-            patterns: [
-              {
-                include: '#illegalReserved'
-              }
-              {
-                include: '#sigmaPerm'
-              }
-            ]
-          }
-        ]
-      }
-      {
-        begin: '(?<=\\()\\s*(perm\\*)\\s*\\('
-        beginCaptures:
-          '1':
-            name: 'keyword.control.definition.sigma'
-        end: '\\)\s*(?=\\))'
-        name: 'meta.declaration.definition.sigma'
-        patterns: [
-          {
-            begin: '(?<=\\))\\s*\\('
-            end: '(?=\\))'
-            patterns: [
-              {
-                include: '#illegalReserved'
-              }
-              {
-                match: '''(?x) #\\b
-                          ([^\\s.#@<>()\\[\\]{}`:\"0-9]
-                           [^\\s.#@<>()\\[\\]{}`:\"]*)\\s*
-                          (?=\\))'''
-                captures:
-                  '1':
-                    name: 'entity.name.function.scheme'
-              }
-              {
-                include: '#sigmaPerm'
-              }
-            ]
-          }
-          {
-            begin: '''(?x)\\G(?<=\\()\\s*
-                      ([^\\s.#@<>()\\[\\]{}`:\"0-9]
-                       [^\\s.#@<>()\\[\\]{}`:\"]*)
-                      (\\s*(@)\\s*
-                        ([^\\s.#@<>()\\[\\]{}`:\"0-9]
-                         [^\\s.#@<>()\\[\\]{}`:\"]*))?'''
-            beginCaptures:
-              '1':
-                name: 'entity.name.function.scheme'
-              '3':
-                name: 'keyword.operator.function.alias.sigma'
-              '4':
-                name: 'support.function.sigma'
-            end: '\\)'
-            patterns: [
-              {
-                include: '#illegalReserved'
-              }
-              {
-                include: '#sigmaPerm'
-              }
-            ]
-          }
-        ]
-      }
-      {
         include: '#illegalRest'
       }
       {
@@ -346,12 +317,107 @@ repository:
         name: 'invalid.illegal.declaration.sigma'
       }
     ]
+  sexpPermLHS:
+    patterns: [
+      { # handle illegal name in left-perm identifier
+        begin: '''(?x)\\(\\s*
+                  (inh\\*?|beq\\*?|grp|def\\*?|perm\\*?)
+                  (?=[\\s.#@<>()\\[\\]{}`:\"])'''
+        beginCaptures:
+          '1':
+            name: 'invalid.illegal.name.sigma'
+        end: '\\)'
+        patterns: [
+          {
+            include: '#illegalRest'
+          }
+        ]
+      }
+      { # match left-perm, highlighting identifier
+        begin: '''(?x)\\(\\s*
+                  ([^\\s.#@<>()\\[\\]{}`:\"0-9]
+                   [^\\s.#@<>()\\[\\]{}`:\"]*)
+                  (\\s*(@))?'''
+        beginCaptures:
+          '1':
+            name: 'entity.name.function.scheme'
+          '3':
+            name: 'keyword.operator.function.alias.sigma'
+        end: '\\)'
+        patterns: [
+          { # handle illegal as-name
+            match: '''(?x)(?<=@)\\s*
+                      (inh\\*?|beq\\*?|grp|def\\*?|perm\\*?)
+                      (?=[\\s.#@<>()\\[\\]{}`:\"])'''
+            captures:
+              '1':
+                name: 'invalid.illegal.name.sigma'
+          }
+          { # highlight as-name
+            match: '''(?x)(?<=@)\\s*
+                      ([^\\s.#@<>()\\[\\]{}`:\"0-9]
+                       [^\\s.#@<>()\\[\\]{}`:\"]*)'''
+            captures:
+              '1':
+                name: 'support.function.sigma'
+          }
+          {
+            include: '#sigmaPerm'
+          }
+          {
+            match: '(?=\\))'
+          }
+        ]
+      }
+      { # handle empty bracket
+        match: '\\(\\s*\\)'
+      }
+    ]
+  sexpPermRHS:
+    begin: '(?<=\\))'
+    end: '\\)\\s*'
+    patterns: [
+      {
+        include: '#comments'
+      }
+      {
+        begin: '\\('
+        end: '(?=\\))'
+        patterns: [
+          { # handle illegal name in right-perm identifier
+            match: '''(?x)
+                      (inh\\*?|beq\\*?|grp|def\\*?|perm\\*?)
+                      (?=[\\s.#@<>()\\[\\]{}`:\"])
+                      (?=\\))'''
+            captures:
+              '1':
+                name: 'invalid.illegal.name.sigma'
+          }
+          { # highlight right-perm identifier
+            match: '''(?x)
+                      ([^\\s.#@<>()\\[\\]{}`:\"0-9]
+                       [^\\s.#@<>()\\[\\]{}`:\"]*)\\s*
+                      (?=\\))'''
+            captures:
+              '1':
+                name: 'entity.name.function.scheme'
+          }
+          {
+            include: '#sigmaPerm'
+          }
+        ]
+      }
+    ]
   illegalRest:
     match: '[^\\s)]+'
     name: 'invalid.illegal.declaration.sigma'
   illegalReserved:
-    match: '\\b(inh\\*?|beq\\*?|grp|def\\*?|perm\\*?)\\b'
-    name: 'invalid.illegal.name.sigma'
+    match: '(?x)\\b
+            (inh\\*?|beq\\*?|grp|def\\*?|perm\\*?)
+            (?=[\\s.#@<>()\\[\\]{}`:\"])'
+    captures:
+      '1':
+        name: 'invalid.illegal.name.sigma'
   ident:
     patterns: [
       {
@@ -389,6 +455,9 @@ repository:
     ]
   sigma:
     patterns: [
+      {
+        include: '#comments'
+      }
       {
         include: '#illegalReserved'
       }
@@ -467,6 +536,9 @@ repository:
     ]
   sigmaPerm:
     patterns: [
+      {
+        include: '#comments'
+      }
       {
         include: '#illegalReserved'
       }
